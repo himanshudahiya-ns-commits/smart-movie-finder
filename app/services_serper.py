@@ -1,5 +1,6 @@
 import requests
 from typing import List, Dict
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 from .config import SERPER_API_KEY, SERPER_BASE_URL
 
@@ -9,6 +10,7 @@ class SerperError(Exception):
     pass
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def search_web_with_serper(query: str, num_results: int = 5) -> Dict:
     """
     Perform a web search using Serper API.
