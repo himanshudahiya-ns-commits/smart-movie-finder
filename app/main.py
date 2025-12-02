@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 
 from .services_omdb import fetch_movie_from_omdb, OmdbError
@@ -10,6 +11,15 @@ app = FastAPI(
     title="Movzie",
     description="Backend-only API that uses OMDb, Serper, and web scraping to fetch movie info.",
     version="0.1.0",
+)
+
+# Enable CORS for frontend communication
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

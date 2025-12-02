@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from typing import Dict, List
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 
 class ImdbScraperError(Exception):
@@ -8,6 +9,7 @@ class ImdbScraperError(Exception):
     pass
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def scrape_imdb_movie_page(url: str) -> Dict:
     """
     Scrape an IMDb movie page for some key details.

@@ -1,5 +1,6 @@
 import requests
 from typing import Optional
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 from .config import OMDB_API_KEY, OMDB_BASE_URL
 
@@ -9,6 +10,7 @@ class OmdbError(Exception):
     pass
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def fetch_movie_from_omdb(title: str, year: Optional[int] = None) -> dict:
     """
     Fetch movie details from OMDb API by title (and optional year).
